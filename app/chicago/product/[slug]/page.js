@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import ProductArt from '../../product-art';
 import { etsyShopUrl, products, getProduct } from '../../../../lib/products';
 import '../../product-art.css';
@@ -10,6 +10,7 @@ export function generateStaticParams() {
 
 export default async function ProductPage({ params }) {
   const { slug } = await params;
+  if (slug === 'pizza-showdown') redirect('/chicago/shop');
   const product = getProduct(slug);
   if (!product) notFound();
 

@@ -4,7 +4,7 @@ import '../edition.css';
 
 export const metadata = {
   title: 'Chicago Edition',
-  description: 'Read the stories behind the Chicago drop, from the elevated railroad to the Great Chicago Fire and the deep-dish showdown.'
+  description: 'Read the stories behind the Chicago drop, from the elevated railroad and the Great Chicago Fire to the lakefront and football Sundays.'
 };
 
 const stories = [
@@ -39,15 +39,26 @@ const stories = [
     }
   },
   {
-    id: 'pizza-showdown',
-    headline: 'The Great Pizza Showdown',
-    deck: 'Two skylines, one slice of civic pride, and a deep-dish body slam.',
+    id: 'lake-shore-drive',
+    headline: 'Cruising Lake Shore Drive',
+    deck: 'The lake on one side, the skyline on the other.',
     paragraphs: [
-      'If Chicago and New York could settle their pizza rivalry in the ring, the Sears Tower would show up carrying dinner. In this print, it faces off against the Empire State Building and delivers a deep-dish body slam.',
-      'We drew the matchup like an old monster-movie poster, with oversized lettering, scuffed ink, and a city skyline looking on from below.'
+      'There’s a moment on Lake Shore Drive when the road bends and the skyline opens up in front of you. It’s a good excuse to take the long way home, especially when the light is dropping over the lakefront.',
+      'Coastal Cruising puts that drive in hot pink and orange, with vintage cars heading toward downtown and the lake catching the last of the sunset.'
     ],
-    artwork: { ...getProduct('pizza-showdown').artwork, caption: 'Pizza Showdown tee artwork' },
-    href: '/chicago/product/pizza-showdown'
+    artwork: { ...getProduct('lake-shore-drive').artwork, caption: 'Lake Shore Drive tee artwork' },
+    href: '/chicago/product/lake-shore-drive'
+  },
+  {
+    id: 'sundays',
+    headline: 'Sunday Belongs to Chicago',
+    deck: 'The tailgate starts long before kickoff.',
+    paragraphs: [
+      'On a football Sunday, the parking lot has its own schedule. Someone fires up the grill while it’s still cold enough to see your breath. The regulars find each other, pull up a folding chair, and start talking about the game.',
+      'That’s the Sunday on our tee. The skyline is in the distance, the flags are up, and the best part of the day might already be happening.'
+    ],
+    artwork: { ...getProduct('sunday-belongs-to-chicago').artwork, caption: 'Sunday Belongs to Chicago tee artwork' },
+    href: '/chicago/product/sunday-belongs-to-chicago'
   }
 ];
 

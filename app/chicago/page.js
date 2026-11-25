@@ -5,7 +5,7 @@ import './drop.css';
 
 export const metadata = {
   title: 'The Chicago Drop',
-  description: 'Explore The Loop, the Great Chicago Fire, and Pizza Showdown. Read the stories behind the Chicago Drop.'
+  description: 'Explore The Loop, the Great Chicago Fire, Lake Shore Drive, and Sunday Belongs to Chicago.'
 };
 
 const features = [
@@ -24,11 +24,18 @@ const features = [
     palette: 'fire'
   },
   {
-    slug: 'pizza-showdown',
-    headline: 'Pizza Showdown',
-    description: 'The Sears Tower and the Empire State Building square off, and Chicago brings the deep dish.',
-    story: 'pizza-showdown',
-    palette: 'pizza'
+    slug: 'lake-shore-drive',
+    headline: 'Lake Shore Drive',
+    description: 'Sunset on the lake, the skyline ahead, and nowhere else you have to be.',
+    story: 'lake-shore-drive',
+    palette: 'drive'
+  },
+  {
+    slug: 'sunday-belongs-to-chicago',
+    headline: 'Sunday Belongs to Chicago',
+    description: 'Cold air, hot grills, and the parking-lot rituals that start long before kickoff.',
+    story: 'sundays',
+    palette: 'sunday'
   }
 ].map(feature => ({ ...feature, product: getProduct(feature.slug) }));
 
