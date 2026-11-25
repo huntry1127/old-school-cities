@@ -140,10 +140,12 @@ export function mountGlobe(root) {
     return {x:centerX+radius*x,y:centerY-radius*y,depth};
   }
 
+  let skylineSpace = 0;
   function resize(){
     width=stage.clientWidth;
     height=stage.clientHeight;
     small=width<=700;
+    skylineSpace=$('.skyline-spacer').offsetHeight;
     centerX=width*(small?.43:.56);
     const scale=Math.min(1,900/width);
     canvas.width=Math.round(width*scale);
@@ -161,9 +163,13 @@ export function mountGlobe(root) {
   }
 
   function createSphere() {
-    const baseRadius=small ? width*1.15 : Math.min(width*1.03,height*1.78);
+    const mapHeight=height-skylineSpace;
+    const baseRadius=small ? width*1.15 : Math.min(width*1.03,mapHeight*1.78);
     radius=baseRadius*zoom;
-    centerY=height*(small?.66:.56)+Math.SQRT1_2*radius;
+    centerY=skylineSpace+mapHeight*(small?.66:.56)+Math.SQRT1_2*radius;
+    // Tuck the skyline base behind the curved edge of the globe.
+    const skylineOverlap=Math.min(90, 20+width*.045);
+    stage.style.setProperty('--skyline-join',(centerY-radius+skylineOverlap)+'px');
     const w=canvas.width, h=canvas.height;
     sphere=new Float32Array(w*h*4);
     pixels=ctx.createImageData(w,h);

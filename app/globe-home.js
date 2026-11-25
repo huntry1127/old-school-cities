@@ -15,6 +15,10 @@ export default function GlobeHome() {
       </header>
       <main>
       <section className="stage" aria-label="Explore the cities">
+      <div className="skyline-spacer" aria-hidden="true" />
+      <div className="globe-skyline" aria-hidden="true">
+        <img src="/globe/old-school-skyline.webp" alt="" width="1280" height="853" fetchPriority="high" />
+      </div>
       <canvas id="globe" tabIndex="0" aria-label="Interactive globe. Use arrow keys to rotate, plus and minus to zoom, and Home to reset."></canvas>
       <div className="intro"><h1>Every city<br /><i>has a story.</i></h1><p>Same City. Different Era. Better Stories.</p></div>
       <canvas id="guides" aria-hidden="true"></canvas>
