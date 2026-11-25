@@ -2,10 +2,11 @@ const cityLocations = [
   {name:'Chicago', collection:'/chicago', building:'Sears Tower', position:[-87.636,41.879], offset:[-38,9], icon:'sears'},
   {name:'Detroit', building:'Renaissance Center', position:[-83.039,42.329], offset:[4,-30], icon:'ren'},
   {name:'New York', building:'Empire State Building', position:[-73.986,40.748], offset:[11,25], icon:'empire'},
-  {name:'Boston', building:'Custom House Tower', position:[-71.053,42.359], offset:[68,-25], icon:'custom'}
+  {name:'Boston', building:'Custom House Tower', position:[-71.053,42.359], offset:[32,-25], icon:'custom'}
 ];
 const radians = Math.PI/180;
-const homeLongitude = -96.5;
+const desktopLongitude = -90.5;
+const mobileLongitude = -96.5;
 // The opening camera sits 45° south of the map center at 38.5° N.
 const homeLatitude = -6.5;
 const landmarkIcons = {
@@ -49,13 +50,34 @@ export function mountGlobe(root) {
   const listen = (target, event, handler) => target.addEventListener(event, handler, {signal: controller.signal});
   const stage = $('.stage');
   const canvas = $('#globe');
+  const skyline = $('.globe-skyline');
+  const skylineContext = skyline.getContext('2d');
   const guides = $('#guides');
   const ctx = canvas.getContext('2d');
   const g = guides.getContext('2d');
   const map = document.createElement('canvas');
   const mapContext = map.getContext('2d', {willReadFrequently:true});
   let texture, width, height, centerX, centerY, radius, sphere, pixels, small;
-  let lon=homeLongitude, lat=homeLatitude, zoom=1, selected=null, frame=0, drag;
+  let homeLongitude, lon, lat=homeLatitude, zoom=1, selected=null, frame=0, drag;
+  const skylineArt = document.createElement('canvas');
+  skylineArt.width = 0;
+  const skylineImage = new Image();
+  skylineImage.onload = () => {
+    const top = Math.round(skylineImage.naturalHeight * .137);
+    skylineArt.width = skylineImage.naturalWidth;
+    skylineArt.height = Math.round(skylineImage.naturalHeight * .474);
+    const {width: artWidth, height: artHeight} = skylineArt;
+    const ink = skylineArt.getContext('2d');
+    ink.drawImage(skylineImage, 0, top, artWidth, artHeight, 0, 0, artWidth, artHeight);
+    ink.globalCompositeOperation = 'destination-in';
+    const fade = ink.createLinearGradient(0, 0, 0, artHeight);
+    fade.addColorStop(.86, '#000');
+    fade.addColorStop(1, '#0000');
+    ink.fillStyle = fade;
+    ink.fillRect(0, 0, artWidth, artHeight);
+    paintSkyline();
+  };
+  skylineImage.src = '/globe/old-school-skyline.webp';
   // Coastlines and lakes from Natural Earth via World Atlas. U.S. outline from U.S. Census Bureau via U.S. Atlas.
   const textureImage = new Image();
   textureImage.onload = () => {
@@ -140,36 +162,37 @@ export function mountGlobe(root) {
     return {x:centerX+radius*x,y:centerY-radius*y,depth};
   }
 
-  let skylineSpace = 0;
   function resize(){
     width=stage.clientWidth;
     height=stage.clientHeight;
     small=width<=700;
-    skylineSpace=$('.skyline-spacer').offsetHeight;
-    centerX=width*(small?.43:.56);
-    const scale=Math.min(1,900/width);
+    const nextHomeLongitude = small ? mobileLongitude : desktopLongitude;
+    if (lon === homeLongitude && lat === homeLatitude) lon = nextHomeLongitude;
+    homeLongitude = nextHomeLongitude;
+    centerX=width*(small?.42:.62);
+    const scale=Math.min(1,1150/width);
     canvas.width=Math.round(width*scale);
     canvas.height=Math.round(height*scale);
+    skyline.width=canvas.width;
+    skyline.height=canvas.height;
     const dpr=Math.min(window.devicePixelRatio||1,2);
     guides.width=Math.round(width*dpr);
     guides.height=Math.round(height*dpr);
     g.setTransform(guides.width/width,0,0,guides.height/height,0,0);
     for(const city of cities){
       const icon = landmarkIcons[city.icon];
-      city.item.style.setProperty('--landmark-height',icon.height*(small?.55:1)+'px');
+      city.item.style.setProperty('--landmark-height',icon.height*(small?.48:1)+'px');
     }
     createSphere();
     schedule();
   }
 
   function createSphere() {
-    const mapHeight=height-skylineSpace;
-    const baseRadius=small ? width*1.15 : Math.min(width*1.03,mapHeight*1.78);
+    const baseRadius=width*(small?.99:.89);
+    const horizon=small ? Math.max(245, Math.min(height*.46,315)) : height*.46;
     radius=baseRadius*zoom;
-    centerY=skylineSpace+mapHeight*(small?.66:.56)+Math.SQRT1_2*radius;
-    // Tuck the skyline base behind the curved edge of the globe.
-    const skylineOverlap=Math.min(90, 20+width*.045);
-    stage.style.setProperty('--skyline-join',(centerY-radius+skylineOverlap)+'px');
+    centerY=horizon+baseRadius+Math.SQRT1_2*(radius-baseRadius);
+    paintSkyline();
     const w=canvas.width, h=canvas.height;
     sphere=new Float32Array(w*h*4);
     pixels=ctx.createImageData(w,h);
@@ -188,6 +211,29 @@ export function mountGlobe(root) {
     }
   }
 
+  function paintSkyline() {
+    if (!skylineArt.width || !radius) return;
+    const scaleX=skyline.width/width, scaleY=skyline.height/height;
+    skylineContext.setTransform(scaleX,0,0,scaleY,0,0);
+    skylineContext.clearRect(0,0,width,height);
+
+    const {width: sourceWidth, height: sourceHeight} = skylineArt;
+    const artworkWidth=width*(small?.97:.715);
+    const artworkHeight=artworkWidth*sourceHeight/sourceWidth;
+    const left=width*(small?.015:.28);
+    const strips=Math.ceil(artworkWidth/6);
+
+    // Follow the same circle as the map, with the skyline base a few pixels under its edge.
+    for(let i=0;i<strips;i++){
+      const x=left+i*artworkWidth/strips;
+      const dx=x+artworkWidth/(2*strips)-centerX;
+      const edge=centerY-Math.sqrt(Math.max(0,radius*radius-dx*dx));
+      skylineContext.drawImage(skylineArt,
+        i*sourceWidth/strips,0,sourceWidth/strips,sourceHeight,
+        x,edge+7-artworkHeight,artworkWidth/strips+.5,artworkHeight);
+    }
+  }
+
   function paintSphere(){
     if(!texture) return;
     const data=pixels.data, cos=Math.cos(lat*radians), sin=Math.sin(lat*radians);
@@ -200,10 +246,12 @@ export function mountGlobe(root) {
       u-=Math.floor(u);
       const v=.5-Math.asin(Math.min(1,Math.max(-1,y*cos+z*sin)))/Math.PI;
       const sample=(Math.min(map.height-1,Math.floor(v*map.height))*map.width+Math.floor(u*map.width))*4;
-      const light=.985+.014*z-.004*x+.004*y;
-      data[i]=texture[sample]*light;
-      data[i+1]=texture[sample+1]*light;
-      data[i+2]=texture[sample+2]*light;
+      const shade=255-texture[sample];
+      const grain=((Math.imul(i+37,1597334677)>>>27)-16)*.13;
+      const light=grain+(z-.5)*4+y*2;
+      data[i]=247-shade*.9+light;
+      data[i+1]=241-shade*.97+light;
+      data[i+2]=228-shade*1.05+light;
       data[i+3]=255*alpha;
     }
     ctx.putImageData(pixels,0,0);
@@ -303,6 +351,7 @@ export function mountGlobe(root) {
     observer.disconnect();
     cancelAnimationFrame(frame);
     textureImage.onload=null;
+    skylineImage.onload=null;
     $('#markers').replaceChildren();
     $('#cities').replaceChildren();
   };
