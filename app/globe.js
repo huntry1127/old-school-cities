@@ -72,11 +72,9 @@ export function mountGlobe(root) {
   const cities = cityLocations.map(location => ({...location}));
 
   for (const city of cities) {
-    const item = document.createElement('button');
-    item.type = 'button';
+    const item = makeCityControl(city, false);
     item.className = 'marker';
     item.setAttribute('aria-label',city.name+' · '+city.building);
-    item.setAttribute('aria-pressed','false');
     item.hidden = true;
     const icon = landmarkIcons[city.icon];
     const artwork = document.createElement('span');
@@ -94,16 +92,25 @@ export function mountGlobe(root) {
     label.className = 'marker-label';
     label.textContent = city.name;
     item.append(artwork,label);
-    listen(item,'click',()=>select(city,false));
     $('#markers').append(item);
-    const shortcut = document.createElement('button');
-    shortcut.type = 'button';
+    const shortcut = makeCityControl(city, true);
     shortcut.textContent = city.name;
-    shortcut.setAttribute('aria-pressed','false');
-    listen(shortcut,'click',()=>select(city,true));
     $('#cities').append(shortcut);
     city.item = item;
     city.shortcut = shortcut;
+  }
+
+  function makeCityControl(city, recenter) {
+    if (city.collection) {
+      const link = document.createElement('a');
+      link.href = city.collection;
+      return link;
+    }
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.setAttribute('aria-pressed', 'false');
+    listen(button, 'click', () => select(city, recenter));
+    return button;
   }
 
   function select(city,recenter) {
@@ -111,16 +118,14 @@ export function mountGlobe(root) {
     $('#selection').hidden = !city;
     if(city){
       $('#selection strong').textContent = city.name;
-      $('#selection span').textContent = city.collection ? city.building : city.building + ' · Collection coming soon';
-      const link = $('#selection a');
-      link.hidden = !city.collection;
-      if (city.collection) link.href = city.collection;
+      $('#selection span').textContent = city.building + ' · Collection coming soon';
       if(recenter){
         const point = project(...city.position);
         if(point.depth<.25 || point.x<42 || point.x>width-85 || point.y<110 || point.y>height-70) resetView();
       }
     }
     for(const entry of cities){
+      if (entry.collection) continue;
       entry.item.setAttribute('aria-pressed',String(entry===city));
       entry.shortcut.setAttribute('aria-pressed',String(entry===city));
     }

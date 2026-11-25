@@ -19,7 +19,7 @@ export default function GlobeHome() {
       <div className="intro"><h1>Every city<br /><i>has a story.</i></h1><p>Same City. Different Era. Better Stories.</p></div>
       <canvas id="guides" aria-hidden="true"></canvas>
       <div id="markers"></div>
-      <div id="selection" hidden><strong></strong><span></span><a href="/chicago" hidden>Explore Chicago</a><button id="dismiss" aria-label="Clear selected city">×</button></div>
+      <div id="selection" hidden><strong></strong><span></span><button id="dismiss" aria-label="Clear selected city">×</button></div>
       <p className="tip">Drag to rotate. Pick a landmark to explore.</p>
       <div className="controls" aria-label="Globe controls"><button id="out" aria-label="Zoom out">−</button><button id="in" aria-label="Zoom in">+</button><button id="reset" aria-label="Reset globe view" title="Reset globe view">⟲</button></div>
       </section>

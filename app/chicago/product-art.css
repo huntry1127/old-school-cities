@@ -1,0 +1,5 @@
+.product-art.has-artwork, .product-hero-art.has-artwork { background: #1e1b18; padding: 0; }
+.product-art.has-artwork::before { content: none; }
+.chicago-product-image { display: block; width: 100%; height: auto; object-fit: contain; }
+.product-art.has-artwork .chicago-product-image { height: 100%; }
+.product-hero-art.has-artwork .chicago-product-image { max-width: 850px; }
