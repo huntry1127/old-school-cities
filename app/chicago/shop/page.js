@@ -8,7 +8,7 @@ export default function ShopPage() {
     <main>
       <header className="site-header">
         <Link href="/chicago" className="wordmark">Chicago Old School</Link>
-        <nav><Link href="/">All Cities</Link><Link href="/chicago">Chicago Edition</Link></nav>
+        <nav><Link href="/">All Cities</Link><Link href="/chicago/edition">Chicago Edition</Link></nav>
       </header>
       <section className="shop-intro">
         <span className="eyebrow">Drop 001</span>

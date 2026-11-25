@@ -1,43 +1,67 @@
-import CityEdition from '../city-edition';
-import { etsyShopUrl, getProduct } from '../../lib/products';
-import './edition.css';
+import Link from 'next/link';
+import DropCarousel from './drop-carousel';
+import { getProduct } from '../../lib/products';
+import './drop.css';
 
 export const metadata = {
-  title: 'Chicago Edition',
-  description: 'Read the stories behind the Chicago drop, from the elevated railroad to the legend of Mrs. O’Leary’s cow.'
+  title: 'The Chicago Drop',
+  description: 'Explore The Loop, the Great Chicago Fire, and Pizza Showdown. Read the stories behind the Chicago Drop.'
 };
 
-const stories = [
+const features = [
   {
-    headline: 'The Loop Lives On',
-    deck: 'The elevated railroad that became part of Chicago’s skyline.',
-    paragraphs: [
-      'You hear it before you see it. A train rounds the bend, the steel tracks rattle overhead, and for a few seconds everyone on the sidewalk talks a little louder.',
-      'Chicago’s first elevated train ran in 1892. The downtown Loop followed in 1897. Our tee celebrates the view from street level, where the tracks frame the buildings and a passing train turns the whole block into a Chicago scene.'
-    ],
-    artwork: { ...getProduct('the-loop').artwork, caption: 'The Loop tee artwork' },
-    href: '/chicago/product/the-loop',
-    source: {
-      label: 'Rail history from the CTA',
-      href: 'https://www.transitchicago.com/facts/'
-    }
+    slug: 'the-loop',
+    headline: 'The Chicago Drop',
+    description: 'The Loop tee takes its cue from the tracks, theaters, and skyline that make downtown unmistakably Chicago.',
+    story: 'story',
+    palette: 'loop'
   },
   {
-    headline: 'The Legend of Mrs. O’Leary’s Cow',
-    deck: 'The Great Chicago Fire of 1871 and the story that outlived it.',
-    paragraphs: [
-      'The story goes that a cow knocked over a lantern and set Chicago ablaze. Investigators found no evidence that Catherine O’Leary started the fire, but the story kept making its way into newspapers, songs, and movies.',
-      'Our print takes that familiar tall tale all the way into monster-movie territory, with a giant cow rising out of the lake above a burning skyline.'
-    ],
-    artwork: { ...getProduct('the-great-chicago-fire').artwork, caption: 'The Great Chicago Fire tee artwork' },
-    href: '/chicago/product/the-great-chicago-fire',
-    source: {
-      label: 'The story behind the legend from WTTW',
-      href: 'https://www.wttw.com/chicago-stories/chicago-fire/a-cow-a-lantern-and-a-myth-mrs-oleary-and-19th-century-immigrants-in-chicago'
-    }
+    slug: 'the-great-chicago-fire',
+    headline: 'The Chicago Fire',
+    description: 'Mrs. O’Leary’s cow gets a monster-movie remake in our take on one of Chicago’s most enduring legends.',
+    story: 'archive',
+    palette: 'fire'
+  },
+  {
+    slug: 'pizza-showdown',
+    headline: 'Pizza Showdown',
+    description: 'The Sears Tower and the Empire State Building square off, and Chicago brings the deep dish.',
+    story: 'pizza-showdown',
+    palette: 'pizza'
   }
-];
+].map(feature => ({ ...feature, product: getProduct(feature.slug) }));
 
-export default function ChicagoPage() {
-  return <CityEdition city="Chicago" shopHref="/chicago/shop" etsyHref={etsyShopUrl} stories={stories} />;
+export default function ChicagoDropPage() {
+  return (
+    <div className="chicago-drop">
+      <header className="drop-masthead">
+        <div className="drop-brand">
+          <Link href="/" aria-label="Old School Cities home">Old School<br />Cities</Link>
+          <p>Vintage graphic tees inspired by local stories</p>
+        </div>
+        <nav aria-label="Chicago Drop navigation">
+          <Link href="/">Cities</Link>
+          <Link href="/chicago" aria-current="page">Chicago</Link>
+          <Link href="/chicago/shop">Shop</Link>
+          <Link href="/chicago/edition">Newspaper</Link>
+        </nav>
+      </header>
+      <main>
+        <h1 className="drop-sr-only">The Chicago Drop</h1>
+        <DropCarousel features={features} />
+        <section className="drop-featured" aria-labelledby="drop-featured-title">
+          <h2 id="drop-featured-title">Featured Chicago Tees</h2>
+          <div className="drop-grid">
+            {features.map(({ product }) => (
+              <Link href={`/chicago/product/${product.slug}`} className="drop-product" key={product.slug}>
+                <img src={product.artwork.src} alt="" width={product.artwork.width} height={product.artwork.height} loading="lazy" />
+                <strong>{product.name}</strong>
+              </Link>
+            ))}
+          </div>
+        </section>
+      </main>
+    </div>
+  );
 }
