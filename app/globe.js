@@ -1,6 +1,6 @@
 const cityLocations = [
   {name:'Chicago', collection:'/chicago', building:'Sears Tower', position:[-87.636,41.879], offset:[-38,9], icon:'sears'},
-  {name:'Detroit', building:'Renaissance Center', position:[-83.039,42.329], offset:[4,-30], icon:'ren'},
+  {name:'Detroit', collection:'/detroit', building:'Renaissance Center', position:[-83.039,42.329], offset:[4,-30], icon:'ren'},
   {name:'New York', building:'Empire State Building', position:[-73.986,40.748], offset:[11,25], icon:'empire'},
   {name:'Boston', building:'Custom House Tower', position:[-71.053,42.359], offset:[32,-25], icon:'custom'}
 ];

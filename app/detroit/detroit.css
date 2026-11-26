@@ -1,0 +1,62 @@
+.detroit-collection {
+  max-width: 84rem;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 6vw, 5.5rem) 5vw 5rem;
+}
+
+.detroit-intro {
+  border-bottom: 1px solid var(--line);
+  margin-bottom: clamp(1.5rem, 4vw, 3rem);
+  padding-bottom: 1rem;
+}
+
+.detroit-intro h1,
+.detroit-tee h2 {
+  margin: 0;
+  font-family: Georgia, serif;
+  font-weight: 500;
+  letter-spacing: -.045em;
+  line-height: 1.05;
+}
+
+.detroit-intro h1 { font-size: clamp(2.75rem, 6vw, 5.5rem); }
+.detroit-tee h2 { font-size: clamp(2rem, 4vw, 3.25rem); }
+
+.detroit-tee {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.5fr);
+  align-items: start;
+  gap: clamp(1.25rem, 4vw, 3rem);
+}
+
+.detroit-tee-copy p { line-height: 1.6; }
+.detroit-availability { font-weight: 700; }
+
+.detroit-gallery {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.detroit-gallery figure { margin: 0; }
+
+.detroit-gallery img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #b6aea5;
+}
+
+.detroit-gallery figcaption {
+  margin-top: .5rem;
+  font-size: .875rem;
+  font-weight: 700;
+}
+
+@media (max-width: 48rem) {
+  .detroit-tee { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 30rem) {
+  .detroit-gallery { grid-template-columns: 1fr; }
+}
